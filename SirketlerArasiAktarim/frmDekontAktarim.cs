@@ -106,22 +106,32 @@ namespace SirketlerArasiAktarim
 
                 if (!VwAktarilacak.IsGroupRow(rowHandle))
                 {
-                    DekontAktar(VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO").ToString(), Convert.ToInt32(VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO")));
+                    try
+                    {
+                        DekontAktar(VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO").ToString(), Convert.ToInt32(VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO")));
 
-                    string sorgu = "Insert Into TblAktarim (AktarimTanimId, KaynakSirket, HedefSirket, KSubeKodu, HSubeKodu, " +
-                    "KBelgeTuru, HBelgeTuru, KaynakSeriNo, KaynakFisNo, HedefSeriNo, HedefFisNo, Tarih) " +
-                    "Values (" + dtAktarim.Rows[0]["Id"] + ", '" + dtAktarim.Rows[0]["KaynakSirket"] + "', '" + dtAktarim.Rows[0]["HedefSirket"] + "',  " +
-                    "" + dtAktarim.Rows[0]["KSubeKodu"] + ",  " + dtAktarim.Rows[0]["HSubeKodu"] + ", " +
-                    "'" + dtAktarim.Rows[0]["KBelgeTuru"] + "', '" + dtAktarim.Rows[0]["HBelgeTuru"] + "', " +
-                    "'" + VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO") + "', '" + VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO") + "', " +
-                    "'" + VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO") + "', '" + VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO") + "', GETDATE())";
+                        string sorgu = "Insert Into TblAktarim (AktarimTanimId, KaynakSirket, HedefSirket, KSubeKodu, HSubeKodu, " +
+                        "KBelgeTuru, HBelgeTuru, KaynakSeriNo, KaynakFisNo, HedefSeriNo, HedefFisNo, Tarih) " +
+                        "Values (" + dtAktarim.Rows[0]["Id"] + ", '" + dtAktarim.Rows[0]["KaynakSirket"] + "', '" + dtAktarim.Rows[0]["HedefSirket"] + "',  " +
+                        "" + dtAktarim.Rows[0]["KSubeKodu"] + ",  " + dtAktarim.Rows[0]["HSubeKodu"] + ", " +
+                        "'" + dtAktarim.Rows[0]["KBelgeTuru"] + "', '" + dtAktarim.Rows[0]["HBelgeTuru"] + "', " +
+                        "'" + VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO") + "', '" + VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO") + "', " +
+                        "'" + VwAktarilacak.GetRowCellValue(rowHandle, "SERI_NO") + "', '" + VwAktarilacak.GetRowCellValue(rowHandle, "DEKONT_NO") + "', GETDATE())";
 
-                    SqlHelper.ExecuteNonQuery(AppSettingsHelper.ConnStrAktarim, CommandType.Text, sorgu);
+                        SqlHelper.ExecuteNonQuery(AppSettingsHelper.ConnStrAktarim, CommandType.Text, sorgu);
 
-                    VwAktarilacak.SetRowCellValue(rowHandle, "Aktarildi", "E");
+                        VwAktarilacak.SetRowCellValue(rowHandle, "Aktarildi", "E");
 
-                    grdAktarilacak.RefreshDataSource();
+                        grdAktarilacak.RefreshDataSource();
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        XtraMessageBox.Show(ex.Message);
+                    }
                 }
+                    
             }
         }
 
@@ -139,6 +149,10 @@ namespace SirketlerArasiAktarim
 
                 try
                 {
+                    
+                    NetsisHelper.hsirket = dtAktarim.Rows[0]["HedefSirket"].ToString();
+                    NetsisHelper.hSubeKodu = Convert.ToInt16(dtAktarim.Rows[0]["HSubeKodu"]);
+
                     dekoMas = NetsisHelper.Instance.Kernel.yeniDekomas(NetsisHelper.Instance.HedefSirket);
 
                     dekoMas.Sube_Kodu = Convert.ToInt32(dtAktarim.Rows[0]["HSubeKodu"]);
@@ -166,9 +180,9 @@ namespace SirketlerArasiAktarim
                         }
                         dekont = dekoMas.KalemEkle(dekontTipi);
                         dekont.kayitYeni();
-                        dekont.Sube_Kodu= Convert.ToInt32(dtAktarim.Rows[0]["HSubeKodu"]);
-                        dekont.Seri_No= dtKaynak.Rows[0]["SERI_NO"].ToString();
-                        dekont.Dekont_No = Convert.ToInt32(dtKaynak.Rows[0]["DEKONT_NO"]);
+                        //dekont.Sube_Kodu= Convert.ToInt32(dtAktarim.Rows[0]["HSubeKodu"]);
+                        //dekont.Seri_No= dtKaynak.Rows[0]["SERI_NO"].ToString();
+                        //dekont.Dekont_No = Convert.ToInt32(dtKaynak.Rows[0]["DEKONT_NO"]);
                         dekont.Sira_No= Convert.ToInt32(dtKaynak.Rows[0]["SIRA_NO"]);
                         dekont.Fisno= dtKaynak.Rows[0]["FISNO"].ToString();
                         dekont.Tarih = Convert.ToDateTime(dtKaynak.Rows[0]["TARIH"]);
@@ -188,6 +202,7 @@ namespace SirketlerArasiAktarim
                         dekont.DOVTIP=Convert.ToInt16(dtKaynak.Rows[0]["DOVTIP"]);
                         dekont.DOVTUT= Convert.ToDouble(dtKaynak.Rows[0]["DOVTUT"]);
 
+                        
                     }
 
                     dekoMas.Tamamla();
