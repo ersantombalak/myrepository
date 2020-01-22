@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SirketlerArasiAktarim
 {
-    class Class1
+    class Class2
     {
         public int MyProperty { get; set; }
     }
