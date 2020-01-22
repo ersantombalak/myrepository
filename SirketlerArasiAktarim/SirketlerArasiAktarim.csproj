@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CekSenetB.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Evrak.cs" />
     <Compile Include="frmAktarimProfilleri.cs">
       <SubType>Form</SubType>
